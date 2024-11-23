@@ -46,6 +46,10 @@ def get_system_stats():
         logging.error(f"Error fetching system stats: {e}")
         return {}
     
+# Determine whether to run in 'one' or 'multiple' mode based on command-line argument
+mode = sys.argv[1] if len(sys.argv) > 1 else 'multiple'
+
+
 
 # Run the app
 if __name__ == '__main__':
