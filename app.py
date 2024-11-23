@@ -22,6 +22,31 @@ history = {
     'time': deque(maxlen=20)  # Store timestamps for x-axis
 }
 
+
+# Function to get system statistics (RAM, CPU, and Disk)
+def get_system_stats():
+    try:
+        # Get memory stats
+        memory = psutil.virtual_memory()
+        ram = memory.percent
+
+        # Get CPU usage
+        cpu = psutil.cpu_percent(interval=1)
+
+        # Get Disk usage
+        disk = psutil.disk_usage('/').percent
+
+        # Return RAM, CPU, and Disk data
+        return {
+            'RAM Usage (%)': ram,
+            'CPU Usage (%)': cpu,
+            'Disk Usage (%)': disk
+        }
+    except Exception as e:
+        logging.error(f"Error fetching system stats: {e}")
+        return {}
+    
+
 # Run the app
 if __name__ == '__main__':
     app.run_server(debug=True)
