@@ -49,6 +49,74 @@ def get_system_stats():
 # Determine whether to run in 'one' or 'multiple' mode based on command-line argument
 mode = sys.argv[1] if len(sys.argv) > 1 else 'multiple'
 
+if mode == 'one':
+    app.layout = html.Div([
+        html.H1('System Monitoring Dashboard (Combined Graph)'),
+
+        # Combined Line Chart for RAM, CPU, and Disk
+        dcc.Graph(id='combined-graph'),
+
+        # Interval for updating the dashboard every 5 seconds
+        dcc.Interval(
+            id='interval-component',
+            interval=5*1000,  # 5000 milliseconds (5 seconds)
+            n_intervals=0
+        )
+    ])
+
+    # Update callback to refresh the combined RAM, CPU, and Disk usage graph every interval
+    @app.callback(
+        Output('combined-graph', 'figure'),
+        [Input('interval-component', 'n_intervals')]
+    )
+    def update_combined_graph(n):
+        # Fetch system stats (RAM, CPU, and Disk)
+        data = get_system_stats()
+
+        if not data:
+            logging.info("No data fetched")
+            return {}
+
+        # Log fetched data in the terminal
+        logging.info(f"Fetched data: {data}")
+
+        # Append the current time, RAM, CPU, and Disk usage to history
+        current_time = datetime.now().strftime('%H:%M:%S')  # Get the current time as a string
+        history['ram'].append(data['RAM Usage (%)'])
+        history['cpu'].append(data['CPU Usage (%)'])
+        history['disk'].append(data['Disk Usage (%)'])
+        history['time'].append(current_time)
+
+        # Create Combined Line Chart
+        combined_figure = {
+            'data': [
+                go.Scatter(
+                    x=list(history['time']),
+                    y=list(history['ram']),
+                    mode='lines+markers',
+                    name='RAM Usage (%)'
+                ),
+                go.Scatter(
+                    x=list(history['time']),
+                    y=list(history['cpu']),
+                    mode='lines+markers',
+                    name='CPU Usage (%)'
+                ),
+                go.Scatter(
+                    x=list(history['time']),
+                    y=list(history['disk']),
+                    mode='lines+markers',
+                    name='Disk Usage (%)'
+                )
+            ],
+            'layout': go.Layout(
+                title='RAM, CPU, and Disk Usage Over Time',
+                xaxis=dict(title='Time', tickformat='%H:%M:%S'),  # Format the time
+                yaxis=dict(title='Percentage'),
+            )
+        }
+
+        return combined_figure
 
 
 # Run the app
