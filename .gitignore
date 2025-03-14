@@ -1,3 +1,14 @@
+# environments variables
+*.venv/
+*venv/
+*.csv
+.env
+*.txt
+!requirements.txt
+*.nenv
+test_*
+*.xls*
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

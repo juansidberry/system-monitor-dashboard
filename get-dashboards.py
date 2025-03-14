@@ -1,5 +1,21 @@
 import requests
+import json
 import csv
+import datetime
+import pprint as pp
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv(override=True)
+
+# Replace with your New Relic API key
+API_KEY      = os.getenv('NR_API_KEY')
+ACCOUNT_ID   = os.getenv('ACCOUNT_ID')
+HEADERS      = {'Api-Key': API_KEY, 'Content-Type': 'application/json'}
+URL          = 'https://api.newrelic.com/graphql'
+TIMESTAMP    = datetime.now().strftime("%Y%m%d-%H%M%S")
+OUTPUT_FILE_NAME = 'synthetic-monitors'
 
 # Set your New Relic API key
 API_KEY = "YOUR_API_KEY"
