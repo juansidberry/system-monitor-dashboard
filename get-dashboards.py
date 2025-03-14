@@ -1,7 +1,7 @@
 import requests
 import json
 import csv
-import datetime
+from datetime import datetime
 import pprint as pp
 import os
 from dotenv import load_dotenv
@@ -15,11 +15,6 @@ ACCOUNT_ID   = os.getenv('ACCOUNT_ID')
 HEADERS      = {'Api-Key': API_KEY, 'Content-Type': 'application/json'}
 URL          = 'https://api.newrelic.com/graphql'
 TIMESTAMP    = datetime.now().strftime("%Y%m%d-%H%M%S")
-OUTPUT_FILE_NAME = 'synthetic-monitors'
-
-# Set your New Relic API key
-API_KEY = "YOUR_API_KEY"
-GRAPHQL_ENDPOINT = "https://api.newrelic.com/graphql"
 
 # GraphQL query to fetch dashboards
 QUERY = """
@@ -28,13 +23,19 @@ QUERY = """
     entitySearch(query: "type='DASHBOARD'") {
       results {
         entities {
-          guid
-          name
-          accountId
-          permalink
-          tags {
-            key
-            values
+          ... on DashboardEntitiyOutline {
+            name
+            accountId
+            owner { email }
+            createdAt
+            updatedAt
+            lastReportingChangeAt
+            permalink
+            guid
+            tags {
+              key
+              values
+            }
           }
         }
       }
@@ -50,7 +51,7 @@ def fetch_dashboards():
         "API-Key": API_KEY
     }
     
-    response = requests.post(GRAPHQL_ENDPOINT, json={"query": QUERY}, headers=headers)
+    response = requests.post(URL, json={"query": QUERY}, headers=headers)
     response.raise_for_status()  # Raise error for failed requests
     
     data = response.json()
