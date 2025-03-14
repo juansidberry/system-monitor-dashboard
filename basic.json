@@ -1,0 +1,60 @@
+{
+  "dashboard": {
+    "name": "Standard Application Metrics",
+    "description": "Baseline visualizations for all business applications.",
+    "permissions": "PUBLIC_READ_ONLY",
+    "widgets": [
+      {
+        "title": "Application Response Time",
+        "visualization": "line",
+        "nrql": "SELECT average(duration) FROM Transaction TIMESERIES"
+      },
+      {
+        "title": "Throughput (Requests per Minute)",
+        "visualization": "line",
+        "nrql": "SELECT count(*) FROM Transaction TIMESERIES"
+      },
+      {
+        "title": "Error Rate",
+        "visualization": "line",
+        "nrql": "SELECT percentage(count(*), WHERE error IS true) FROM Transaction TIMESERIES"
+      },
+      {
+        "title": "Apdex Score",
+        "visualization": "line",
+        "nrql": "SELECT apdex(duration, t: 0.5) FROM Transaction TIMESERIES"
+      },
+      {
+        "title": "CPU Usage",
+        "visualization": "line",
+        "nrql": "SELECT average(cpuPercent) FROM SystemSample TIMESERIES"
+      },
+      {
+        "title": "Memory Usage",
+        "visualization": "line",
+        "nrql": "SELECT average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample TIMESERIES"
+      },
+      {
+        "title": "Database Query Performance",
+        "visualization": "line",
+        "nrql": "SELECT average(databaseDuration) FROM Transaction TIMESERIES"
+      },
+      {
+        "title": "External Service Latency",
+        "visualization": "line",
+        "nrql": "SELECT average(duration) FROM ExternalService TIMESERIES"
+      },
+      {
+        "title": "Transaction Breakdown",
+        "visualization": "pie",
+        "nrql": "SELECT count(*) FROM Transaction FACET name"
+      },
+      {
+        "title": "Infrastructure Health",
+        "visualization": "table",
+        "nrql": "SELECT average(cpuPercent), average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample FACET hostname"
+      }
+    ]
+  }
+}
+  
