@@ -1,60 +1,111 @@
 {
-  "dashboard": {
-    "name": "Standard Application Metrics",
-    "description": "Baseline visualizations for all business applications.",
-    "permissions": "PUBLIC_READ_ONLY",
-    "widgets": [
-      {
-        "title": "Application Response Time",
-        "visualization": "line",
-        "nrql": "SELECT average(duration) FROM Transaction TIMESERIES"
-      },
-      {
-        "title": "Throughput (Requests per Minute)",
-        "visualization": "line",
-        "nrql": "SELECT count(*) FROM Transaction TIMESERIES"
-      },
-      {
-        "title": "Error Rate",
-        "visualization": "line",
-        "nrql": "SELECT percentage(count(*), WHERE error IS true) FROM Transaction TIMESERIES"
-      },
-      {
-        "title": "Apdex Score",
-        "visualization": "line",
-        "nrql": "SELECT apdex(duration, t: 0.5) FROM Transaction TIMESERIES"
-      },
-      {
-        "title": "CPU Usage",
-        "visualization": "line",
-        "nrql": "SELECT average(cpuPercent) FROM SystemSample TIMESERIES"
-      },
-      {
-        "title": "Memory Usage",
-        "visualization": "line",
-        "nrql": "SELECT average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample TIMESERIES"
-      },
-      {
-        "title": "Database Query Performance",
-        "visualization": "line",
-        "nrql": "SELECT average(databaseDuration) FROM Transaction TIMESERIES"
-      },
-      {
-        "title": "External Service Latency",
-        "visualization": "line",
-        "nrql": "SELECT average(duration) FROM ExternalService TIMESERIES"
-      },
-      {
-        "title": "Transaction Breakdown",
-        "visualization": "pie",
-        "nrql": "SELECT count(*) FROM Transaction FACET name"
-      },
-      {
-        "title": "Infrastructure Health",
-        "visualization": "table",
-        "nrql": "SELECT average(cpuPercent), average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample FACET hostname"
-      }
-    ]
-  }
+  "name": "Standard Application Metrics",
+  "description": "Baseline visualizations for all business applications.",
+  "permissions": "PUBLIC_READ_ONLY",
+  "pages": [
+    {
+      "name": "Standard Application Metrics",
+      "description": "Baseline visualizations for all business applications.",
+      "widgets": [
+        {
+          "title": "eman-esf prd app transactions time",
+          "layout": {
+            "column": 1,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.area"
+          },
+          "rawConfiguration": {
+            "nrqlQueries": [
+              {
+                "accountId": 837777,
+                "query": "SELECT sum(apm.service.overview.web * 1000) FROM Metric WHERE (entity.guid = 'ODM3Nzc3fEFQTXxBUFBMSUNBVElPTnw3NDI2NzI0NzA') FACET `segmentName` LIMIT MAX SINCE 1800 seconds AGO TIMESERIES "
+              },
+              {
+                "accountId": 837777,
+                "query": "SELECT average(convert(apm.service.transaction.duration, unit, 'ms')) AS 'Response time' FROM Metric WHERE (entity.guid = 'ODM3Nzc3fEFQTXxBUFBMSUNBVElPTnw3NDI2NzI0NzA') AND (transactionType = 'Web') LIMIT MAX SINCE 1800 seconds AGO TIMESERIES "
+              }
+            ]
+          }
+        },
+        {
+          "title": "Application Response Time",
+          "layout": {
+            "column": 5,
+            "row": 1,
+            "width": 4,
+            "height": 3
+          },
+          "linkedEntityGuids": null,
+          "visualization": {
+            "id": "viz.line"
+          },
+          "rawConfiguration": {
+            "facet": {
+              "showOtherSeries": false
+            },
+            "legend": {
+              "enabled": true
+            },
+            "nrqlQueries": [
+              {
+                "accountId": 837777,
+                "query": "SELECT sum(apm.service.overview.web * 1000) FROM Metric WHERE (entity.guid = 'ODM3Nzc3fEFQTXxBUFBMSUNBVElPTnw3NDI2NzI0NzA') FACET `segmentName` LIMIT MAX SINCE 30 minutes ago TIMESERIES UNTIL now"
+              }
+            ]
+          }
+        },
+        {
+          "title": "Throughput (Requests per Minute)",
+          "visualization": "line",
+          "nrql": "SELECT count(*) FROM Transaction TIMESERIES"
+        },
+        {
+          "title": "Error Rate",
+          "visualization": "line",
+          "nrql": "SELECT percentage(count(*), WHERE error IS true) FROM Transaction TIMESERIES"
+        },
+        {
+          "title": "Apdex Score",
+          "visualization": "line",
+          "nrql": "SELECT apdex(duration, t: 0.5) FROM Transaction TIMESERIES"
+        },
+        {
+          "title": "CPU Usage",
+          "visualization": "line",
+          "nrql": "SELECT average(cpuPercent) FROM SystemSample TIMESERIES"
+        },
+        {
+          "title": "Memory Usage",
+          "visualization": "line",
+          "nrql": "SELECT average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample TIMESERIES"
+        },
+        {
+          "title": "Database Query Performance",
+          "visualization": "line",
+          "nrql": "SELECT average(databaseDuration) FROM Transaction TIMESERIES"
+        },
+        {
+          "title": "External Service Latency",
+          "visualization": "line",
+          "nrql": "SELECT average(duration) FROM ExternalService TIMESERIES"
+        },
+        {
+          "title": "Transaction Breakdown",
+          "visualization": "pie",
+          "nrql": "SELECT count(*) FROM Transaction FACET name"
+        },
+        {
+          "title": "Infrastructure Health",
+          "visualization": "table",
+          "nrql": "SELECT average(cpuPercent), average(memoryUsedBytes/memoryTotalBytes*100) FROM SystemSample FACET hostname"
+        }
+      ]
+    }
+  ]
 }
   
